@@ -1,0 +1,46 @@
+[gd_scene load_steps=6 format=3 uid="uid://odh1bn2mfaps"]
+
+[ext_resource type="Script" path="res://godot_gobbler.gd" id="1_e02yb"]
+[ext_resource type="PackedScene" uid="uid://bgmvqepswkigc" path="res://godot_player.tscn" id="1_tnwug"]
+[ext_resource type="PackedScene" uid="uid://c41vxq1bxhibu" path="res://game_controller.tscn" id="3_rrkxv"]
+[ext_resource type="Script" path="res://bounce_back_zone.gd" id="4_31ti6"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_eabtm"]
+size = Vector2(500, 400)
+
+[node name="godot_gobbler" type="Node2D"]
+script = ExtResource("1_e02yb")
+
+[node name="bounce_back_zone1" type="Area2D" parent="."]
+position = Vector2(640, 600)
+gravity_space_override = 3
+gravity_point_center = Vector2(1, -2)
+gravity_direction = Vector2(1, -2)
+linear_damp_space_override = 3
+linear_damp = 1.0
+script = ExtResource("4_31ti6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="bounce_back_zone1"]
+shape = SubResource("RectangleShape2D_eabtm")
+
+[node name="bounce_back_zone2" type="Area2D" parent="."]
+position = Vector2(1280, 600)
+gravity_space_override = 3
+gravity_point_center = Vector2(-1, -2)
+gravity_direction = Vector2(-1, -2)
+linear_damp_space_override = 3
+linear_damp = 1.0
+script = ExtResource("4_31ti6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="bounce_back_zone2"]
+shape = SubResource("RectangleShape2D_eabtm")
+
+[node name="game_controller" parent="." instance=ExtResource("3_rrkxv")]
+
+[node name="godot_player" parent="." instance=ExtResource("1_tnwug")]
+position = Vector2(960, 900)
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

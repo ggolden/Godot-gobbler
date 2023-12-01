@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://bjbfntlj23gf6"]
+
+[ext_resource type="Script" path="res://gobble.gd" id="1_cd028"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_r33a2"]
+radius = 20.0
+
+[node name="gobble" type="RigidBody2D"]
+script = ExtResource("1_cd028")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_r33a2")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+scale = Vector2(1.8, 1.95)
+
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]
