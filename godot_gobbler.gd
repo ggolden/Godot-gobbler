@@ -9,9 +9,10 @@ func _ready():
 func score_changed(old, new):
 	print("score changed: " + str(old) + " -> " + str(new))
 	
-func take_value(value: int):
-	print("taking value: " + str(value))
+func take_value(value: int, color: Color):
+	print("taking value: " + str(value) + " color: " + str(color))
 	$game_controller.increment_score(value)
+	$godot_player.light_up(color)
 
 func new_gobble():
 	var window_size = DisplayServer.window_get_size()
@@ -22,16 +23,16 @@ func new_gobble():
 	var known_as = "gobble " + str(gobble_sequence)
 	gobble_sequence += 1
 
-	var new_gobble = gobble.instantiate()
-	new_gobble.name = known_as
-	new_gobble.position = location
-	new_gobble.color = color
-	new_gobble.value = value
+	var instance = gobble.instantiate()
+	instance.name = known_as
+	instance.position = location
+	instance.color = color
+	instance.value = value
 
-	new_gobble.value_available.connect(take_value)
+	instance.value_available.connect(take_value)
 
-	add_child(new_gobble)
-	print("new gobble: " + new_gobble.name + " @ " + str(new_gobble.position) + " value: " + str(value))
+	add_child(instance)
+	print("new gobble: " + instance.name + " @ " + str(instance.position) + " value: " + str(value))
 
 func _on_timer_timeout():
 	new_gobble()

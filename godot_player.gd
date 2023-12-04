@@ -47,3 +47,11 @@ func _physics_process(delta):
 		print("player collision with: ", collision.get_collider().name)
 		if (collision.get_collider().has_method("gobbled")):
 			collision.get_collider().gobbled()
+
+func light_up(color: Color):
+	$Sprite2D.material.set_shader_parameter("override_set", true)
+	$Sprite2D.material.set_shader_parameter("override_color", color)
+	$light_up_timer.start();
+
+func _on_light_up_timer_timeout():
+	$Sprite2D.material.set_shader_parameter("override_set", false)

@@ -1,12 +1,12 @@
 extends RigidBody2D
 
-signal value_available(score: int)
+signal value_available(score: int, color: Color)
 
 @export var value: int = 1
 @export var color: Color = Color(1, 1, 1, 1)
 
 func gobbled():
-	value_available.emit(value)
+	value_available.emit(value, color)
 	queue_free()
 
 func wasted():
