@@ -12,6 +12,12 @@ func increment_score(by):
 	score += by
 	display_score()
 	score_changed.emit(old_score, score)
+	$score_bar.adjust_value(by)
+	if (by > 2):
+		$special_bar.adjust_value(by)
 
 func _ready():
+	$score_bar.reset()
+	$special_bar.reset()
 	display_score()
+	
