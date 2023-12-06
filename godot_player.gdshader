@@ -5,10 +5,11 @@ uniform bool override_set = false;
 
 void fragment() {
 	if (override_set) {
+		vec4 replacement = vec4(override_color.r, override_color.g, override_color.b, COLOR.a);
 		if ((UV.x < 0.05) || (UV.x > 0.95) || (UV.y < 0.05) || (UV.y > 0.95)) {
-			COLOR = override_color;
+			COLOR = replacement;
 		} else if (COLOR.r > 0.4) {
-			COLOR = override_color;
+			COLOR = replacement;
 		}
 	}
 }
