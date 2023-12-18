@@ -1,9 +1,246 @@
 <!DOCTYPE html>
+<head>
+    <style>
+        .row {
+            display: flex;
+        }
+        .column {
+            flex: 45%;
+        }
+        .gutter {
+            flex: 10%;
+        }
+        h1 {
+            text-align: center;
+        }
+        .center {
+            text-align: center;
+        }
+        body {
+            margin-left: 30px;
+            margin-right: 30px;
+        }
+        pre {
+            background-color:black;
+            color:chartreuse;
+            width: 600px;
+            padding: 10px 10px 10px 10px;
+            border-radius: 16px;
+        }
+    </style>
+</head>
 <html>
     <body>
         <h1>Godot Gobbler</h1>
-        <img src="icon.svg" />
-        <img src="gobbler_gobbling_01.png" alt="Gobbler and gobbles">
-        <img src="gobbler_gobbling_02.png" alt="Gobbler gobbling a gobble">
+        <p>The Godot Gobbler project is a foray into Godot's 2D engine.  It features:</p>
+        <ul>
+            <li>2D Physics, with weird gravity zones</li>
+            <li>A turn and advance 3 key player control (with reset)</li>
+            <li>A reusable status bar</li>
+            <li>Spawning and screen exit notification for cleanup</li>
+            <li>"Gobble" animation effect implemented in a shader</li>
+        </ul>
+        <p>It is implemented in <a href="https://godotengine.org" target="_blank">Godot</a> 4.2, and is coded in <a href="https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html" target="_blank">GDScript</a>.</p>
+        
+        <h2>The Game</h2>
+        <p>The player controls the "gobbler".  The gobbler moves around its 2D world, in which "gobbles" are falling.  When the gobbler encounters a gobble, it gobbles it up.  The gobbler loves to gobble gobbles.</p>
+        <p>Gobbles come in various colors.  Each gobble has a different point value between 1 and 3, depending on the intensity of its color.  The gobbler accumulates points from gobbling gobbles.  The point total is shown in the gobbler's status bar.</p>
+        <div class="row">
+            <div class="col">
+                <h2>Physics</h2>
+                <p>Standard 2D physics effects the gobbles, which fall down from somewhere above the top of the world.
+                    The gobbler is outside of physics, under kinematic player control.</p>
+                <p>Two rectangular areas override normal physics, changing the direction and intensity of gravity.
+                    These are outlined on the screen.
+                    As gobbles fall through these zones, their straight down path is altered by the adjusted physics.
+                    These zones are implemented with Godot's <a href="https://docs.godotengine.org/en/4.2/classes/class_area2d.html" target="_blank">Area2D</a> nodes, with their Gravity x,y direction overridden.</p>
+                <p>Collisions between the gobbler and a gobble trigger gobbling, awarding the player points.</p>
+                <img src="physics.gif" alt="Godot Gobbler game capture showing weird physics." />
+            </div>
+            <div class="gutter"></div>
+            <div class="col">
+                <h2>&nbsp;</h2>
+                <figure>
+                    <img src="bounce_back_zone1_gravity.png" alt="Gravity override of an Area2D node showing the x=1, y=-2 direction." />
+                    <figcaption class="center">Area2D Inspector Showing Physics Override</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <h2>Player Control</h2>
+                <p>The gobbler is a <a href="https://docs.godotengine.org/en/4.2/classes/class_characterbody2d.html" target="_blank">CharacterBody2D</a> node, which can participate with physics collisions, but is not moved by the physics engine.</p>
+                <p>The player controlls the gobbler, moving it forward, left or right, using the arrow or "gamer" keys: ⬆️ / w, ⬅️ / a, ➡️, / d, or by using a controller.
+                    These alternate inputs are configured in the project's input system</p>
+                <p>If the player loses the gobbler offscreen, it can be restored to the starting position with the space bar.</p>
+                <p>Movement is implemented in the GDScript godot_player.gd, placed on the godot_player node.</p>
+                <p>The left or right rotation is detected by the <b>direction()</b> func, using Godot's symbolic input system:</p>
+                <pre>
+func direction() -> float:
+    var rv = 0
+    if Input.is_action_pressed("ui_left"):
+        rv = -1
+    if Input.is_action_pressed("ui_right"):
+        rv = 1
+    return rv</pre>
+                <p>The forward movement is similarly detected using the <b>velocity()</b> func:</p>
+                <pre>
+func velocity() -> Vector2:
+    var rv = Vector2.ZERO
+    if Input.is_action_pressed("ui_up"):
+        rv = Vector2.UP.rotated(rotation)
+    return rv</pre>
+                <p>Movement happens in the <b>_physics_process(delta)</b> function, to properly mesh with the physics engine, and uses some script variables to control turn and advance rates:</p>
+                <pre>
+# player control turn rate in radians / second
+@export var turn_rate = PI
+
+# player control advance speed in units / second
+@export var advance_rate = 222
+
+func _physics_process(delta):
+    # turn based on player input
+    rotation += direction() * turn_rate * delta
+    
+    # advance based on player input
+    var collision = move_and_collide(velocity() * advance_rate * delta)</pre>
+
+                <p>The <b>move_and_collide</b> call moves the gobbler and detects collisions with gobbles.  On collision, code in the <b>_physics_process(delta)</b> function informs the gobble that it has been gobbled:</p>
+                <pre>
+# advance based on player input
+var collision = move_and_collide(velocity() * advance_rate * delta)
+
+# see what we ran into, gobble it if we can
+if collision:
+    if (collision.get_collider().has_method("gobbled")):
+        collision.get_collider().gobbled()</pre>
+                <p>Each gobble has a script with a <b>gobbled()</b> function.  This sends out a signal that the value of the gobble is available to be captured, which the game controller script hears and increases the player's score.</p>
+                <img src="movement.gif" alt="Godot Gobbler game capture showing weird physics." />
+            </div>
+            <div class="gutter"></div>
+            <div class="col">
+                <h2>&nbsp;</h2>
+                <figure>
+                    <img src="input_config.png" alt="Godot project settings > Input showing payer controls config." />
+                    <figcaption class="center">Project Settings > Input Map<br />Showing Input Config</figcaption>
+                </figure>
+                <figure>
+                    <img src="godot_player_inspector.png" alt="godot_player node's inspector showing the overrides for the script." />
+                    <figcaption class="center">godot_player Inspector<br />Showing Overrides</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <h2>Status Bar</h2>
+                <p>The status bar is a Node2D with the <b>level_bar.gd</b> script attached.  The script handles drawing and the current value of the bar.  The game's <b>game_controller</b> scene defines the UI, and includes two status bars; one to keep track of score, and one that increments only with high value gobbles.</p>
+                <p>The script is marked as a <b>@tool</b> so that it is drawn in the editor as well as the game.  It's size, colors and scale are configurable:</p>
+                <pre>
+@tool
+extends Node2D
+
+@export var dimensions: Vector2 = Vector2(200, 50)
+@export var min_value: float = 0
+@export var max_value: float = 100
+@export var border_color: Color = Color.WHITE
+@export var bar_color: Color = Color.SEA_GREEN</pre>
+                <p>Value is kept in a script variable, and the bar is rendered in the <b>_draw()</b> function:</p>
+                <pre>
+var value: float = 50
+const border: float = 2
+
+func _draw():
+    var pct: float = (value - min_value) / (max_value - min_value)
+    const half_border: float = border / 2
+    draw_rect(Rect2(half_border, half_border, dimensions.x, dimensions.y),
+        border_color, false, border)
+    
+    if (pct > 0):
+        var width = pct * (dimensions.x - border)
+        var height = dimensions.y - border
+        draw_rect(Rect2(border, border, width, height), bar_color, true)</pre>
+                <p>The bar has <b>reset()</b> and <b>adjust_value(by)</b> methods; reset() is called at start, and adjust_value() when the player has a new score.</p>
+                <p>The <b>queue_redraw()</b> call is vital, and signals the engire that the node needs to be redrawn.</p>
+                <pre>
+func reset():
+    value = 0
+    queue_redraw()
+
+func adjust_value(by: float):
+    value += by
+    if (value > max_value):
+        value = max_value
+    if (value &lt; min_value):
+        value = min_value
+    queue_redraw()</pre>
+            </div>
+            <div class="gutter"></div>
+            <div class="col">
+                <h2>&nbsp;</h2>
+                <figure>
+                    <img src="status_bar.png" alt="Status bars and score." />
+                    <figcaption class="center">Two Status Bars<br />Under Player Score</figcaption>
+                </figure>
+                <figure>
+                    <img src="status_bar_config.png" alt="Status bars inspector." />
+                    <figcaption class="center">Main Status Bar<br />Inspector</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <h2>Spawning and Cleanup</h2>
+                <p>Gobble spawning is handled by the <b>godot_gobbler.gd</b> script on the main node of the main screen.</p>
+                <p>A timer fires every second, which is connected to this script's <b>_on_timer_timeout()</b> function, which calls <b>new_gobble()</b></p>
+                <p>A random position somewhere above the window is selected for the gobble.  A random set of color components make up its color and value.</p>
+                <p>The template for the new gobble instance is loaded from the <b>gobble.tscn</b> scene, instantiated, and setup with the computed values.</p>
+                <p>A call to <b>add_child()</b> adds the new instance to the game tree.</p>
+                <pre>
+var gobble = load("res://gobble.tscn")
+var gobble_sequence = 1
+
+func new_gobble():
+    var window_size = DisplayServer.window_get_size()
+
+    var location = Vector2(randi_range(10, window_size.x-20),
+            randi_range(10, window_size.y-20) * -1)
+    var color = Color(randf_range(0, 1), randf_range(0, 1),
+            randf_range(0, 1), 1)
+    var value: int = int(color.r + color.b + color.g) + 1
+    var known_as = "gobble " + str(gobble_sequence)
+    gobble_sequence += 1
+
+    var instance = gobble.instantiate()
+    instance.name = known_as
+    instance.position = location
+    instance.color = color
+    instance.value = value
+
+    instance.value_available.connect(take_value)
+
+    add_child(instance)</pre>
+                <p>When the gobbler collides with a gobble, and the <b>gobbed()</b> function is called on the gobble's script, it calls <b>queue_free()</b> which results it it being removed from the game tree.</p>
+                <p>Each gobble also has a <a href="https://docs.godotengine.org/en/4.2/classes/class_visibleonscreennotifier2d.html" target="_blank">VisibleOnScreenNotifier2D</a> node.
+                    When the gobble completely leaves the screen, it triggers a call to its script, which then also calls <b>queue_free()</b>.</p>
+            </div>
+            <div class="gutter"></div>
+            <div class="col">
+                <h2>&nbsp;</h2>
+                <figure>
+                    <img src="timer_config.png" alt="Spawning Timer Configuration" />
+                    <figcaption class="center">The Timer for Spawning Gobbles<br />Inspector</figcaption>
+                </figure>
+                <figure>
+                    <img src="timer_connections.png" alt="Spawning Timer Connections" />
+                    <figcaption class="center">The Spawning Timer's<br />Signal Connections</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <h2>Shader</h2>
+        <p>The effect, how it works.</p>
     </body>
 </html>
