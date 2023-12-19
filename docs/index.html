@@ -77,8 +77,8 @@
                 <p>The player controlls the gobbler, moving it forward, left or right, using the arrow or "gamer" keys: ⬆️ / w, ⬅️ / a, ➡️, / d, or by using a controller.
                     These alternate inputs are configured in the project's input system</p>
                 <p>If the player loses the gobbler offscreen, it can be restored to the starting position with the space bar.</p>
-                <p>Movement is implemented in the GDScript godot_player.gd, placed on the godot_player node.</p>
-                <p>The left or right rotation is detected by the <b>direction()</b> func, using Godot's symbolic input system:</p>
+                <p>Movement is implemented in the GDScript <b>godot_player.gd</b>, placed on the <b>godot_player</b> node.</p>
+                <p>The left or right rotation is detected by the <b>direction()</b> function, using Godot's input system:</p>
 
                 <pre>
 func direction() -> float:
@@ -117,15 +117,15 @@ func _physics_process(delta):
                 <p>The <b>move_and_collide</b> call moves the gobbler and detects collisions with gobbles.  On collision, code in the <b>_physics_process(delta)</b> function informs the gobble that it has been gobbled:</p>
                 
                 <pre>
-# advance based on player input
-var collision = move_and_collide(velocity() * advance_rate * delta)
+    # advance based on player input
+    var collision = move_and_collide(velocity() * advance_rate * delta)
 
-# see what we ran into, gobble it if we can
-if collision:
-    if (collision.get_collider().has_method("gobbled")):
-        collision.get_collider().gobbled()</pre>
+    # see what we ran into, gobble it if we can
+    if collision:
+        if (collision.get_collider().has_method("gobbled")):
+            collision.get_collider().gobbled()</pre>
                 
-                <p>Each gobble has a script with a <b>gobbled()</b> function.  This sends out a signal that the value of the gobble is available to be captured, which the game controller script hears and increases the player's score.</p>
+                <p>Each gobble has the <b>gobble.gd</b> script with a <b>gobbled()</b> function.  This sends out a signal that the value of the gobble is available to be captured, which the game controller script <b>godot_gobbler.gd</b> hears and increases the player's score.</p>
                 <img src="movement.gif" alt="Godot Gobbler game capture showing weird physics." />
             </div>
             <div class="gutter"></div>
@@ -145,8 +145,8 @@ if collision:
         <div class="row">
             <div class="col">
                 <h2>Status Bar</h2>
-                <p>The status bar is a Node2D with the <b>level_bar.gd</b> script attached.  The script handles drawing and the current value of the bar.  The game's <b>game_controller</b> scene defines the UI, and includes two status bars; one to keep track of score, and one that increments only with high value gobbles.</p>
-                <p>The script is marked as a <b>@tool</b> so that it is drawn in the editor as well as the game.  It's size, colors and scale are configurable:</p>
+                <p>The status bar is a <a href="https://docs.godotengine.org/en/4.2/classes/class_node2d.html" target="_blank">Node2D</a> with the <b>level_bar.gd</b> script attached.  The script handles drawing and the current value of the bar.  The game's <b>game_controller</b> scene defines the UI, and includes two status bars; one to keep track of score, and one that increments only with high value gobbles.</p>
+                <p>The script is marked as a <b>@tool</b> so that it is drawn in the editor as well as the game.  Its size, colors and scale are configurable:</p>
                 
                 <pre>
 @tool
@@ -175,7 +175,7 @@ func _draw():
         var height = dimensions.y - border
         draw_rect(Rect2(border, border, width, height), bar_color, true)</pre>
                 
-                <p>The bar has <b>reset()</b> and <b>adjust_value(by)</b> methods; reset() is called at start, and adjust_value() when the player has a new score.</p>
+                <p>The bar has <b>reset()</b> and <b>adjust_value(by)</b> methods; <b>reset()</b> is called at start, and <b>adjust_value()</b> when the player has a new score.</p>
                 <p>The <b>queue_redraw()</b> call is vital, and signals the engire that the node needs to be redrawn.</p>
                 
                 <pre>
@@ -209,10 +209,10 @@ func adjust_value(by: float):
         <div class="row">
             <div class="col">
                 <h2>Spawning and Cleanup</h2>
-                <p>Gobble spawning is handled by the <b>godot_gobbler.gd</b> script on the main node of the main screen.</p>
-                <p>A timer fires every second, which is connected to this script's <b>_on_timer_timeout()</b> function, which calls <b>new_gobble()</b></p>
+                <p>Gobble spawning is handled by the <b>godot_gobbler.gd</b> script on the main node of the main scene.</p>
+                <p>A timer fires every second, which is connected to this script's <b>_on_timer_timeout()</b> function, which calls <b>new_gobble()</b> to spawn a new gobble instance.</p>
                 <p>A random position somewhere above the window is selected for the gobble.  A random set of color components make up its color and value.</p>
-                <p>The template for the new gobble instance is loaded from the <b>gobble.tscn</b> scene, instantiated, and setup with the computed values.</p>
+                <p>The template for the new gobble instance is loaded from the <b>gobble.tscn</b> scene, instantiated, and configured with the computed values.</p>
                 <p>A call to <b>add_child()</b> adds the new instance to the game tree.</p>
                 
                 <pre>
@@ -261,14 +261,14 @@ func new_gobble():
         <div class="row">
             <div class="col">
                 <h2>Shader</h2>
-                <p>Since gobbling is the point of the game, it needs to be indicated to the user with some effects.</p>  
+                <p>Since gobbling is the point of the game, I wanted to make it special with some effects.</p>  
                 <p>We could use a motion effect, such as shaking the gobbler, or a visual effect, such as changing the gobbler's appearance, or a sound effect, or some combination of all three.</p>
                 <p>Godot Gobbler uses a visual effect, and does so using a Shader.
                     A Shader is a program that is run on the graphics processor, which controlls the appearance of various parts of the game.</p>
                 <p>What this shader does is change the border color of the gobbler for a brief period of time, to match the color of the gobble just gobbled.  The face details of the gobbler are also changed.</p>
                 <img src="shader.gif" alt="Godot Gobbler shader effect." />
-                <p>The shader code can be edited in the Godot editor to create the <b>godot-player.gdshader</b> resource, which is then attached to the <b>godot_player</b> scene's <b>Sprite2D</b> node.</p>
-                <p>The shader has two parameters; override_color and override_set.  When a gobble occurs, the <b>godot_player.gd</b> script set the color and turn on the effect by setting these parameters, and starts a timer to control the duration of the effect:</p>
+                <p>The shader code can be edited in the Godot editor to create the <b>godot-player.gdshader</b> resource, which is then attached to the <b>godot_player</b> scene's <a href="https://docs.godotengine.org/en/4.2/classes/class_sprite2d.html" target="_blank">Sprite2D</a> node.</p>
+                <p>The shader has two parameters; <b>override_color</b> and <b>override_set</b>.  When a gobble occurs, the <b>godot_player.gd</b> script set the color and turns on the effect by setting these parameters, and starts a timer to control the duration of the effect:</p>
 
                 <pre>
 func light_up(color: Color):
@@ -276,9 +276,9 @@ func light_up(color: Color):
     $Sprite2D.material.set_shader_parameter("override_color", color)
     $light_up_timer.start();</pre>
 
-                <p>The shader is a <b>fragment shader</b>, called for each fragment (or pixel) of the image being displayed.  It has a <b>COLOR</b> value that it wants to display, and a <b>UV</b> value indicating the x,y position it is displaying (UV is expressed as a percentage between 0 and 1).</p>
-                <p>The shader computes the color it will use to replace the COLOR by using the parameter color, but to make things a little smoother, preserves the transparency of the orignial COLOR.
-                    It detects the border area to replace by the UV value, and the face details by a heuristic looking at the red value of the COLOR.</p>
+                <p>The shader is a <a href="https://docs.godotengine.org/en/4.2/tutorials/shaders/your_first_shader/your_first_2d_shader.html" target="_blank">fragment shader</a>, called for each fragment (or pixel) of the image being displayed.  It has a <b>COLOR</b> value that it wants to display, and a <b>UV</b> value indicating the x,y position it is displaying (UV is expressed as a percentage between 0 and 1).</p>
+                <p>The shader computes the color it will use to replace the <b>COLOR</b> by using the parameter color, but to make things a little smoother, preserves the transparency of the orignial <b>COLOR</b>.
+                    It detects the border area to replace by the UV value, and the face details by a heuristic looking at the red value of the original <b>COLOR</b>.</p>
                 
                 <pre class="amber">
 shader_type canvas_item;
