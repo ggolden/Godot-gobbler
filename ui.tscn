@@ -1,0 +1,38 @@
+[gd_scene load_steps=3 format=3 uid="uid://r3s8hrbqbfqb"]
+
+[ext_resource type="Script" path="res://ui.gd" id="1_p5c1x"]
+[ext_resource type="PackedScene" uid="uid://c7ijksw3qa7c6" path="res://level_bar.tscn" id="2_86eby"]
+
+[node name="UI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_p5c1x")
+
+[node name="GameTitle" type="Label" parent="."]
+layout_mode = 0
+offset_left = 882.0
+offset_top = 20.0
+offset_right = 1110.0
+offset_bottom = 68.0
+theme_override_font_sizes/font_size = 32
+text = "Godot Gobbler"
+
+[node name="PlayerScore" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1828.0
+offset_top = 29.0
+offset_right = 1900.0
+offset_bottom = 77.0
+theme_override_colors/font_color = Color(0.14902, 0.701961, 0.239216, 1)
+theme_override_font_sizes/font_size = 32
+text = "9999"
+horizontal_alignment = 1
+
+[node name="ScoreBar" parent="." instance=ExtResource("2_86eby")]
+position = Vector2(1700, 80)
+min_level = null
+max_level = null
