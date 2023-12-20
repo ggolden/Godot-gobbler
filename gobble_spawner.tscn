@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://cvi0mopcqvrls"]
+
+[ext_resource type="Script" path="res://gobble_spawner.gd" id="1_c3efx"]
+
+[node name="GobbleSpawner" type="Node"]
+script = ExtResource("1_c3efx")
+
+[node name="SpawnTimer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="SpawnTimer" to="." method="_on_spawn_timer_timeout"]

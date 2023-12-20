@@ -1,0 +1,46 @@
+[gd_scene load_steps=7 format=3 uid="uid://u25aygy27ry"]
+
+[ext_resource type="PackedScene" uid="uid://r3s8hrbqbfqb" path="res://ui.tscn" id="1_1epo8"]
+[ext_resource type="Script" path="res://game.gd" id="1_fjjo7"]
+[ext_resource type="PackedScene" uid="uid://cvi0mopcqvrls" path="res://gobble_spawner.tscn" id="2_3ntm0"]
+[ext_resource type="Script" path="res://bounce_back_zone.gd" id="3_6h5hu"]
+[ext_resource type="PackedScene" uid="uid://dukwa2vh3ymqm" path="res://gobbler.tscn" id="4_blj8o"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lpiud"]
+size = Vector2(500, 400)
+
+[node name="Game" type="Node"]
+script = ExtResource("1_fjjo7")
+
+[node name="World" type="Node2D" parent="."]
+
+[node name="bounce_back_zone1" type="Area2D" parent="World"]
+position = Vector2(640, 600)
+gravity_space_override = 3
+gravity_point_center = Vector2(1, -2)
+gravity_direction = Vector2(1, -2)
+linear_damp_space_override = 3
+linear_damp = 1.0
+script = ExtResource("3_6h5hu")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/bounce_back_zone1"]
+shape = SubResource("RectangleShape2D_lpiud")
+
+[node name="bounce_back_zone2" type="Area2D" parent="World"]
+position = Vector2(1280, 600)
+gravity_space_override = 3
+gravity_point_center = Vector2(-1, -2)
+gravity_direction = Vector2(-1, -2)
+linear_damp_space_override = 3
+linear_damp = 1.0
+script = ExtResource("3_6h5hu")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/bounce_back_zone2"]
+shape = SubResource("RectangleShape2D_lpiud")
+
+[node name="UI" parent="." instance=ExtResource("1_1epo8")]
+
+[node name="GobbleSpawner" parent="." instance=ExtResource("2_3ntm0")]
+
+[node name="Gobbler" parent="." instance=ExtResource("4_blj8o")]
+position = Vector2(960, 900)

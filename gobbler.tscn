@@ -1,0 +1,28 @@
+[gd_scene load_steps=6 format=3 uid="uid://dukwa2vh3ymqm"]
+
+[ext_resource type="Script" path="res://gobbler.gd" id="1_q0cy6"]
+[ext_resource type="Shader" path="res://gobbler.gdshader" id="2_81t2o"]
+[ext_resource type="Texture2D" uid="uid://fa7bg7sses8t" path="res://icon.svg" id="3_kfxna"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ofmxk"]
+shader = ExtResource("2_81t2o")
+shader_parameter/override_color = Vector4(1, 0, 0, 1)
+shader_parameter/override_set = false
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mxto8"]
+radius = 53.0377
+
+[node name="Gobbler" type="CharacterBody2D"]
+script = ExtResource("1_q0cy6")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_ofmxk")
+texture = ExtResource("3_kfxna")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_mxto8")
+
+[node name="light_up_timer" type="Timer" parent="."]
+wait_time = 0.3
+
+[connection signal="timeout" from="light_up_timer" to="." method="_on_light_up_timer_timeout"]
