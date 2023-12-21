@@ -4,7 +4,6 @@ extends RigidBody2D
 
 
 ## the signal the gobble emits when it has been gobbled
-signal value_available(score: int, color: Color)
 signal was_gobbled(value: int, color: Color)
 
 
@@ -25,7 +24,6 @@ func _on_visible_on_screen_notifier_2d_screen_exited():
 
 ## the gobble was gobbled
 func gobbled():
-	value_available.emit(value, color)
 	was_gobbled.emit(value, color)
 	queue_free()
 
