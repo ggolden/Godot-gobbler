@@ -8,6 +8,9 @@
 shader = ExtResource("2_81t2o")
 shader_parameter/override_color = Vector4(1, 0, 0, 1)
 shader_parameter/override_set = false
+shader_parameter/bottom_set = false
+shader_parameter/left_set = false
+shader_parameter/right_set = false
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_mxto8"]
 radius = 53.0377
@@ -25,4 +28,8 @@ shape = SubResource("CircleShape2D_mxto8")
 [node name="light_up_timer" type="Timer" parent="."]
 wait_time = 0.3
 
+[node name="engine_timer" type="Timer" parent="."]
+wait_time = 0.1
+
 [connection signal="timeout" from="light_up_timer" to="." method="_on_light_up_timer_timeout"]
+[connection signal="timeout" from="engine_timer" to="." method="_on_engine_timer_timeout"]

@@ -47,6 +47,12 @@ func _on_light_up_timer_timeout():
 	$Sprite2D.material.set_shader_parameter("override_set", false)
 
 
+func _on_engine_timer_timeout():
+	$Sprite2D.material.set_shader_parameter("bottom_set", false)
+	$Sprite2D.material.set_shader_parameter("left_set", false)
+	$Sprite2D.material.set_shader_parameter("right_set", false)
+
+
 # in support of ToMouse movement
 func _input(event):
 	if event is InputEventMouseButton:
@@ -59,6 +65,26 @@ func light_up(color: Color):
 	$Sprite2D.material.set_shader_parameter("override_color", color)
 	$light_up_timer.start()
 
+
+func light_up_engine():
+	$Sprite2D.material.set_shader_parameter("bottom_set", true)
+	$Sprite2D.material.set_shader_parameter("left_set", false)
+	$Sprite2D.material.set_shader_parameter("right_set", false)
+	$engine_timer.start()
+
+
+func light_up_shuffle_left():
+	$Sprite2D.material.set_shader_parameter("left_set", true)
+	$Sprite2D.material.set_shader_parameter("bottom_set", false)
+	$Sprite2D.material.set_shader_parameter("right_set", false)
+	$engine_timer.start()
+
+
+func light_up_shuffle_right():
+	$Sprite2D.material.set_shader_parameter("right_set", true)
+	$Sprite2D.material.set_shader_parameter("bottom_set", false)
+	$Sprite2D.material.set_shader_parameter("left_set", false)
+	$engine_timer.start()
 
 func _physics_process_3way(delta):
 	# turn based on player input
@@ -108,7 +134,6 @@ func _physics_process_watch_mouse(delta):
 
 
 func _physics_process_shuffle_fly(delta):
-	
 	# gravity
 	if not is_on_floor():
 		velocity.y += _gravity * delta
@@ -116,6 +141,7 @@ func _physics_process_shuffle_fly(delta):
 	# fire up the engine!
 	if Input.is_action_pressed("ui_up"):
 		velocity = Vector2(0, -1 * fly_rate).rotated(rotation)
+		light_up_engine()
 
 	var direction = Input.get_axis("ui_left", "ui_right")
 
@@ -126,6 +152,10 @@ func _physics_process_shuffle_fly(delta):
 		# on the floor, left and right controls shuffling
 		if direction:
 			velocity.x = direction * advance_rate
+			if (direction > 0):
+				light_up_shuffle_right()
+			else:
+				light_up_shuffle_left()
 		else:
 			velocity.x = move_toward(velocity.x, 0, advance_rate)
 	else:
