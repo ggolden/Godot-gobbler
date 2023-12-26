@@ -1,38 +1,42 @@
 <!DOCTYPE html>
-<head>
-    <style>
-        .row {
-            display: flex;
-        }
-        .column {
-            flex: 45%;
-        }
-        .gutter {
-            flex: 10%;
-        }
-        h1 {
-            text-align: center;
-        }
-        .center {
-            text-align: center;
-        }
-        body {
-            margin-left: 30px;
-            margin-right: 30px;
-        }
-        pre {
-            background-color:black;
-            color:chartreuse;
-            width: 600px;
-            padding: 10px 10px 10px 10px;
-            border-radius: 16px;
-        }
-        .amber {
-            color:darkgoldenrod;
-        }
-    </style>
-</head>
 <html>
+    <head>
+        <style>
+            .row {
+                display: flex;
+            }
+            .colMain {
+                flex: 60%;
+            }
+            .colRight {
+                flex: 30%;
+            }
+            .gutter {
+                flex: 10%;
+            }
+            h1 {
+                text-align: center;
+            }
+            .center {
+                text-align: center;
+            }
+            body {
+                margin-left: 30px;
+                margin-right: 30px;
+            }
+            pre {
+                background-color:black;
+                color:chartreuse;
+                width: 600px;
+                padding: 10px 10px 10px 10px;
+                border-radius: 16px;
+            }
+            .amber {
+                color:darkgoldenrod;
+            }
+        </style>
+    </head>
+
     <body>
         <h1>Godot Gobbler</h1>
         <p>The Godot Gobbler project is a foray into Godot's 2D engine.  It features:</p>
@@ -49,7 +53,7 @@
         <p>The player controls the "gobbler".  The gobbler moves around its 2D world, in which "gobbles" are falling.  When the gobbler encounters a gobble, it gobbles it up.  The gobbler loves to gobble gobbles.</p>
         <p>Gobbles come in various colors.  Each gobble has a different point value between 1 and 3, depending on the intensity of its color.  The gobbler accumulates points from gobbling gobbles.  The point total is shown in the gobbler's status bar.</p>
         <div class="row">
-            <div class="col">
+            <div class="colMain">
                 <h2>Physics</h2>
                 <p>Standard 2D physics effects the gobbles, which fall down from somewhere above the top of the world.
                     The gobbler is outside of physics, under kinematic player control.</p>
@@ -61,7 +65,7 @@
                 <img src="physics.gif" alt="Godot Gobbler game capture showing weird physics." />
             </div>
             <div class="gutter"></div>
-            <div class="col">
+            <div class="colRight">
                 <h2>&nbsp;</h2>
                 <figure>
                     <img src="bounce_back_zone1_gravity.png" alt="Gravity override of an Area2D node showing the x=1, y=-2 direction." />
@@ -71,7 +75,7 @@
         </div>
 
         <div class="row">
-            <div class="col">
+            <div class="colMain">
                 <h2>Player Control</h2>
                 <p>The gobbler is a <a href="https://docs.godotengine.org/en/4.2/classes/class_characterbody2d.html" target="_blank">CharacterBody2D</a> node, which can participate with physics collisions, but is not moved by the physics engine.</p>
                 <p>The player controlls the gobbler, moving it forward, left or right, using the arrow or "gamer" keys: ⬆️ / w, ⬅️ / a, ➡️, / d, or by using a controller.
@@ -129,7 +133,7 @@ func _physics_process(delta):
                 <img src="movement.gif" alt="Godot Gobbler game capture showing weird physics." />
             </div>
             <div class="gutter"></div>
-            <div class="col">
+            <div class="colRight">
                 <h2>&nbsp;</h2>
                 <figure>
                     <img src="input_config.png" alt="Godot project settings > Input showing payer controls config." />
@@ -143,7 +147,7 @@ func _physics_process(delta):
         </div>
 
         <div class="row">
-            <div class="col">
+            <div class="colMain">
                 <h2>Status Bar</h2>
                 <p>The status bar is a <a href="https://docs.godotengine.org/en/4.2/classes/class_node2d.html" target="_blank">Node2D</a> with the <b>level_bar.gd</b> script attached.  The script handles drawing and the current value of the bar.  The game's <b>game_controller</b> scene defines the UI, and includes two status bars; one to keep track of score, and one that increments only with high value gobbles.</p>
                 <p>The script is marked as a <b>@tool</b> so that it is drawn in the editor as well as the game.  Its size, colors and scale are configurable:</p>
@@ -193,7 +197,7 @@ func adjust_value(by: float):
             
             </div>
             <div class="gutter"></div>
-            <div class="col">
+            <div class="colRight">
                 <h2>&nbsp;</h2>
                 <figure>
                     <img src="status_bar.png" alt="Status bars and score." />
@@ -207,7 +211,7 @@ func adjust_value(by: float):
         </div>
 
         <div class="row">
-            <div class="col">
+            <div class="colMain">
                 <h2>Spawning and Cleanup</h2>
                 <p>Gobble spawning is handled by the <b>godot_gobbler.gd</b> script on the main node of the main scene.</p>
                 <p>A timer fires every second, which is connected to this script's <b>_on_timer_timeout()</b> function, which calls <b>new_gobble()</b> to spawn a new gobble instance.</p>
@@ -245,7 +249,7 @@ func new_gobble():
                     When the gobble completely leaves the screen, it triggers a call to its script, which then also calls <b>queue_free()</b>.</p>
             </div>
             <div class="gutter"></div>
-            <div class="col">
+            <div class="colRight">
                 <h2>&nbsp;</h2>
                 <figure>
                     <img src="timer_config.png" alt="Spawning Timer Configuration" />
@@ -259,7 +263,7 @@ func new_gobble():
         </div>
 
         <div class="row">
-            <div class="col">
+            <div class="colMain">
                 <h2>Shader</h2>
                 <p>Since gobbling is the point of the game, I wanted to make it special with some effects.</p>  
                 <p>We could use a motion effect, such as shaking the gobbler, or a visual effect, such as changing the gobbler's appearance, or a sound effect, or some combination of all three.</p>
@@ -301,7 +305,7 @@ void fragment() {
 
             </div>
             <div class="gutter"></div>
-            <div class="col">
+            <div class="colRight">
                 <h2>&nbsp;</h2>
                 <figure>
                     <img src="shader_installation.png" alt="The Shader Installed" />
