@@ -55,3 +55,4 @@ shape = SubResource("RectangleShape2D_nmsok")
 
 [node name="Gobbler" parent="." instance=ExtResource("4_blj8o")]
 position = Vector2(960, 900)
+movement_type = 5

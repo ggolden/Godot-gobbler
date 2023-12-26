@@ -3,7 +3,7 @@ extends CharacterBody2D
 ## Gobbler (player) controller
 
 
-enum MovementType {ThreeWay, EightWway, Asteriods, WatchMouse, ToMouse}
+enum MovementType {ThreeWay, EightWway, Asteriods, WatchMouse, ToMouse, ShuffleFly}
 
 
 ## player control turn rate in radians / second
@@ -12,7 +12,11 @@ enum MovementType {ThreeWay, EightWway, Asteriods, WatchMouse, ToMouse}
 @export var advance_rate = 222
 ## player control method: "3way" for turn and advance, "8way" for full directional slid
 @export var movement_type: MovementType = MovementType.ThreeWay
+## flying engine velocity
+@export var fly_rate = 400.0
 
+# gravity from project settings to sync with RigidBody nodes
+var _gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 var _reset_position = Vector2.ZERO
 var _reset_rotation = 0
@@ -35,6 +39,8 @@ func _physics_process(delta):
 			_physics_process_watch_mouse(delta)
 		MovementType.ToMouse:
 			_physics_process_to_mouse(delta)
+		MovementType.ShuffleFly:
+			_physics_process_shuffle_fly(delta)
 
 
 func _on_light_up_timer_timeout():
@@ -101,6 +107,35 @@ func _physics_process_watch_mouse(delta):
 	_handle_reset()
 
 
+func _physics_process_shuffle_fly(delta):
+	
+	# gravity
+	if not is_on_floor():
+		velocity.y += _gravity * delta
+
+	# fire up the engine!
+	if Input.is_action_pressed("ui_up"):
+		velocity = Vector2(0, -1 * fly_rate).rotated(rotation)
+
+	var direction = Input.get_axis("ui_left", "ui_right")
+
+	if is_on_floor():
+		# if just landed and rotated, auto rotate
+		rotation = move_toward(rotation, 0, 3 * delta)
+
+		# on the floor, left and right controls shuffling
+		if direction:
+			velocity.x = direction * advance_rate
+		else:
+			velocity.x = move_toward(velocity.x, 0, advance_rate)
+	else:
+		# while flying, left and right rotate
+		rotation += direction * turn_rate * delta
+
+	move_and_slide()
+	_handle_collision(get_last_slide_collision())
+	_handle_reset()
+
 func _physics_process_to_mouse(delta):
 	velocity = position.direction_to(_target) * advance_rate
 
@@ -124,7 +159,7 @@ func _physics_process_to_mouse(delta):
 func _handle_collision(collision):
 	# see what we ran into, gobble it if we can
 	if collision:
-		print("player collision with: ", collision.get_collider().name)
+		# print("player collision with: ", collision.get_collider().name)
 		if (collision.get_collider().has_method("gobbled")):
 			collision.get_collider().gobbled()
 
@@ -133,3 +168,4 @@ func _handle_reset():
 	if (Input.is_action_pressed("ui_accept")):
 		position = _reset_position
 		rotation = _reset_rotation
+		velocity = Vector2.ZERO
