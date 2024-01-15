@@ -3,6 +3,10 @@ extends CharacterBody2D
 ## Gobbler (player) controller
 
 
+## some gobble was gobbled
+signal fuel_level_changed(value: float)
+
+
 enum MovementType {ThreeWay, EightWway, Asteriods, WatchMouse, ToMouse, ShuffleFly}
 
 
@@ -14,6 +18,8 @@ enum MovementType {ThreeWay, EightWway, Asteriods, WatchMouse, ToMouse, ShuffleF
 @export var movement_type: MovementType = MovementType.ThreeWay
 ## flying engine velocity
 @export var fly_rate = 400.0
+## jump velocity
+@export var jump_rate = 100.0
 
 # gravity from project settings to sync with RigidBody nodes
 var _gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -21,6 +27,9 @@ var _gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 var _reset_position = Vector2.ZERO
 var _reset_rotation = 0
 var _target = Vector2.ZERO
+
+var _fuel = 0.0
+
 
 func _ready():
 	_reset_position = position
@@ -86,6 +95,21 @@ func light_up_shuffle_right():
 	$Sprite2D.material.set_shader_parameter("left_set", false)
 	$engine_timer.start()
 
+
+func add_fuel(fuel):
+	_fuel += fuel
+	fuel_level_changed.emit(_fuel)
+
+
+func use_fuel(fuel):
+	_fuel -= fuel
+	fuel_level_changed.emit(_fuel)
+
+
+func fuel_level():
+	return _fuel
+
+
 func _physics_process_3way(delta):
 	# turn based on player input
 	var dir = 0
@@ -140,8 +164,15 @@ func _physics_process_shuffle_fly(delta):
 
 	# fire up the engine!
 	if Input.is_action_pressed("ui_up"):
-		velocity = Vector2(0, -1 * fly_rate).rotated(rotation)
-		light_up_engine()
+		if _fuel > 0:
+			velocity = Vector2(0, -1 * fly_rate).rotated(rotation)
+			light_up_engine()
+			use_fuel(delta)
+		elif is_on_floor():
+			velocity = Vector2(0, -1 * jump_rate).rotated(rotation)
+			light_up_engine()
+		else:
+			print("no fuel")
 
 	var direction = Input.get_axis("ui_left", "ui_right")
 
@@ -165,6 +196,7 @@ func _physics_process_shuffle_fly(delta):
 	move_and_slide()
 	_handle_collision(get_last_slide_collision())
 	_handle_reset()
+
 
 func _physics_process_to_mouse(delta):
 	velocity = position.direction_to(_target) * advance_rate

@@ -34,5 +34,11 @@ horizontal_alignment = 1
 
 [node name="ScoreBar" parent="." instance=ExtResource("2_86eby")]
 position = Vector2(1700, 80)
-min_level = null
-max_level = null
+min_level = 0.0
+max_level = 100.0
+
+[node name="FuelBar" parent="." instance=ExtResource("2_86eby")]
+position = Vector2(1700, 199)
+bar_color = Color(0.313726, 0.411765, 0.890196, 1)
+min_level = 0.0
+max_level = 100.0
