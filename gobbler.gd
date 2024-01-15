@@ -20,6 +20,8 @@ enum MovementType {ThreeWay, EightWway, Asteriods, WatchMouse, ToMouse, ShuffleF
 @export var fly_rate = 400.0
 ## jump velocity
 @export var jump_rate = 100.0
+## starging fuel (in seconds)
+@export var starting_fuel = 10.0
 
 # gravity from project settings to sync with RigidBody nodes
 var _gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -28,7 +30,7 @@ var _reset_position = Vector2.ZERO
 var _reset_rotation = 0
 var _target = Vector2.ZERO
 
-var _fuel = 0.0
+var _fuel = starting_fuel
 
 
 func _ready():
