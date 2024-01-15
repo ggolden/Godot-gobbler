@@ -25,7 +25,7 @@ const border: float = 2
 
 
 ## current level
-var _level: float = 50
+@onready var _level: float = min_level + ((max_level - min_level) / 2)
 
 ## keep the current level within the min and max
 func _bound_level():

@@ -49,10 +49,12 @@ script = ExtResource("3_0bh44")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/StaticBody2D"]
 shape = SubResource("RectangleShape2D_nmsok")
 
-[node name="UI" parent="." instance=ExtResource("1_1epo8")]
-
 [node name="GobbleSpawner" parent="." instance=ExtResource("2_3ntm0")]
 
 [node name="Gobbler" parent="." instance=ExtResource("4_blj8o")]
 position = Vector2(960, 900)
 movement_type = 5
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="UI" parent="HUD" instance=ExtResource("1_1epo8")]

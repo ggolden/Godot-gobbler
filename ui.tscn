@@ -41,4 +41,4 @@ max_level = 100.0
 position = Vector2(1700, 199)
 bar_color = Color(0.313726, 0.411765, 0.890196, 1)
 min_level = 0.0
-max_level = 100.0
+max_level = 10.0

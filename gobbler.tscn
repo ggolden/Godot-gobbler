@@ -31,5 +31,8 @@ wait_time = 0.3
 [node name="engine_timer" type="Timer" parent="."]
 wait_time = 0.1
 
+[node name="follow_camera" type="Camera2D" parent="."]
+offset = Vector2(2.08165e-12, -300)
+
 [connection signal="timeout" from="light_up_timer" to="." method="_on_light_up_timer_timeout"]
 [connection signal="timeout" from="engine_timer" to="." method="_on_engine_timer_timeout"]
