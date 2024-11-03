@@ -39,16 +39,25 @@
 
     <body>
         <h1>Godot Gobbler</h1>
-        <p>The Godot Gobbler project is a foray into Godot's 2D engine.  It features:</p>
-        <ul>
-            <li>2D Physics, with weird gravity zones</li>
-            <li>A turn and advance 3 key player control (with reset)</li>
-            <li>A reusable status bar</li>
-            <li>Spawning and screen exit notification for cleanup</li>
-            <li>"Gobble" animation effect implemented in a shader</li>
-        </ul>
-        <p>It is implemented in <a href="https://godotengine.org" target="_blank">Godot</a> 4.2, and is coded in <a href="https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html" target="_blank">GDScript</a>.</p>
-        
+
+        <div class="row">
+            <div class="colMain">
+                <p>The Godot Gobbler project is a foray into Godot's 2D engine.  It features:</p>
+                <ul>
+                    <li>2D Physics, with weird gravity zones</li>
+                    <li>A turn and advance 3 key player control (with reset)</li>
+                    <li>A reusable status bar</li>
+                    <li>Spawning and screen exit notification for cleanup</li>
+                    <li>"Gobble" animation effect implemented in a shader</li>
+                </ul>
+                <p>It is implemented in <a href="https://godotengine.org" target="_blank">Godot</a> 4.2, and is coded in <a href="https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html" target="_blank">GDScript</a>.</p>
+            </div>
+            <div class="gutter"></div>
+            <div class="colRight">
+                <p><a href="web/gobbler.html" target="_blank">Play Godot Gobbler</a></p>
+            </div>
+        </div>
+
         <h2>The Game</h2>
         <p>The player controls the "gobbler".  The gobbler moves around its 2D world, in which "gobbles" are falling.  When the gobbler encounters a gobble, it gobbles it up.  The gobbler loves to gobble gobbles.</p>
         <p>Gobbles come in various colors.  Each gobble has a different point value between 1 and 3, depending on the intensity of its color.  The gobbler accumulates points from gobbling gobbles.  The point total is shown in the gobbler's status bar.</p>
