@@ -50,7 +50,7 @@
                     <li>Spawning and screen exit notification for cleanup</li>
                     <li>"Gobble" animation effect implemented in a shader</li>
                 </ul>
-                <p>It is implemented in <a href="https://godotengine.org" target="_blank">Godot</a> 4.2, and is coded in <a href="https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html" target="_blank">GDScript</a>.</p>
+                <p>It is implemented in <a href="https://godotengine.org" target="_blank">Godot</a> 4.3, and is coded in <a href="https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html" target="_blank">GDScript</a>.</p>
             </div>
             <div class="gutter"></div>
             <div class="colRight">
@@ -69,7 +69,7 @@
                 <p>Two rectangular areas override normal physics, changing the direction and intensity of gravity.
                     These are outlined on the screen.
                     As gobbles fall through these zones, their straight down path is altered by the adjusted physics.
-                    These zones are implemented with Godot's <a href="https://docs.godotengine.org/en/4.2/classes/class_area2d.html" target="_blank">Area2D</a> nodes, with their Gravity x,y direction overridden.</p>
+                    These zones are implemented with Godot's <a href="https://docs.godotengine.org/en/4.3/classes/class_area2d.html" target="_blank">Area2D</a> nodes, with their Gravity x,y direction overridden.</p>
                 <p>Collisions between the gobbler and a gobble trigger gobbling, awarding the player points.</p>
                 <img src="physics.gif" alt="Godot Gobbler game capture showing weird physics." />
             </div>
@@ -86,7 +86,7 @@
         <div class="row">
             <div class="colMain">
                 <h2>Player Control</h2>
-                <p>The gobbler is a <a href="https://docs.godotengine.org/en/4.2/classes/class_characterbody2d.html" target="_blank">CharacterBody2D</a> node, which can participate with physics collisions, but is not moved by the physics engine.</p>
+                <p>The gobbler is a <a href="https://docs.godotengine.org/en/4.3/classes/class_characterbody2d.html" target="_blank">CharacterBody2D</a> node, which can participate with physics collisions, but is not moved by the physics engine.</p>
                 <p>The player controlls the gobbler, moving it forward, left or right, using the arrow or "gamer" keys: ⬆️ / w, ⬅️ / a, ➡️, / d, or by using a controller.
                     These alternate inputs are configured in the project's input system</p>
                 <p>If the player loses the gobbler offscreen, it can be restored to the starting position with the space bar.</p>
@@ -158,7 +158,7 @@ func _physics_process(delta):
         <div class="row">
             <div class="colMain">
                 <h2>Status Bar</h2>
-                <p>The status bar is a <a href="https://docs.godotengine.org/en/4.2/classes/class_node2d.html" target="_blank">Node2D</a> with the <b>level_bar.gd</b> script attached.  The script handles drawing and the current value of the bar.  The game's <b>game_controller</b> scene defines the UI, and includes two status bars; one to keep track of score, and one that increments only with high value gobbles.</p>
+                <p>The status bar is a <a href="https://docs.godotengine.org/en/4.3/classes/class_node2d.html" target="_blank">Node2D</a> with the <b>level_bar.gd</b> script attached.  The script handles drawing and the current value of the bar.  The game's <b>game_controller</b> scene defines the UI, and includes two status bars; one to keep track of score, and one that increments only with high value gobbles.</p>
                 <p>The script is marked as a <b>@tool</b> so that it is drawn in the editor as well as the game.  Its size, colors and scale are configurable:</p>
                 
                 <pre>
@@ -254,7 +254,7 @@ func new_gobble():
     add_child(instance)</pre>
                 
                 <p>When the gobbler collides with a gobble, and the <b>gobbed()</b> function is called on the gobble's script, it calls <b>queue_free()</b> which results it it being removed from the game tree.</p>
-                <p>Each gobble also has a <a href="https://docs.godotengine.org/en/4.2/classes/class_visibleonscreennotifier2d.html" target="_blank">VisibleOnScreenNotifier2D</a> node.
+                <p>Each gobble also has a <a href="https://docs.godotengine.org/en/4.3/classes/class_visibleonscreennotifier2d.html" target="_blank">VisibleOnScreenNotifier2D</a> node.
                     When the gobble completely leaves the screen, it triggers a call to its script, which then also calls <b>queue_free()</b>.</p>
             </div>
             <div class="gutter"></div>
@@ -280,7 +280,7 @@ func new_gobble():
                     A Shader is a program that is run on the graphics processor, which controlls the appearance of various parts of the game.</p>
                 <p>What this shader does is change the border color of the gobbler for a brief period of time, to match the color of the gobble just gobbled.  The face details of the gobbler are also changed.</p>
                 <img src="shader.gif" alt="Godot Gobbler shader effect." />
-                <p>The shader code can be edited in the Godot editor to create the <b>godot-player.gdshader</b> resource, which is then attached to the <b>godot_player</b> scene's <a href="https://docs.godotengine.org/en/4.2/classes/class_sprite2d.html" target="_blank">Sprite2D</a> node.</p>
+                <p>The shader code can be edited in the Godot editor to create the <b>godot-player.gdshader</b> resource, which is then attached to the <b>godot_player</b> scene's <a href="https://docs.godotengine.org/en/4.3/classes/class_sprite2d.html" target="_blank">Sprite2D</a> node.</p>
                 <p>The shader has two parameters; <b>override_color</b> and <b>override_set</b>.  When a gobble occurs, the <b>godot_player.gd</b> script set the color and turns on the effect by setting these parameters, and starts a timer to control the duration of the effect:</p>
 
                 <pre>
@@ -289,7 +289,7 @@ func light_up(color: Color):
     $Sprite2D.material.set_shader_parameter("override_color", color)
     $light_up_timer.start();</pre>
 
-                <p>The shader is a <a href="https://docs.godotengine.org/en/4.2/tutorials/shaders/your_first_shader/your_first_2d_shader.html" target="_blank">fragment shader</a>, called for each fragment (or pixel) of the image being displayed.  It has a <b>COLOR</b> value that it wants to display, and a <b>UV</b> value indicating the x,y position it is displaying (UV is expressed as a percentage between 0 and 1).</p>
+                <p>The shader is a <a href="https://docs.godotengine.org/en/4.3/tutorials/shaders/your_first_shader/your_first_2d_shader.html" target="_blank">fragment shader</a>, called for each fragment (or pixel) of the image being displayed.  It has a <b>COLOR</b> value that it wants to display, and a <b>UV</b> value indicating the x,y position it is displaying (UV is expressed as a percentage between 0 and 1).</p>
                 <p>The shader computes the color it will use to replace the <b>COLOR</b> by using the parameter color, but to make things a little smoother, preserves the transparency of the orignial <b>COLOR</b>.
                     It detects the border area to replace by the UV value, and the face details by a heuristic looking at the red value of the original <b>COLOR</b>.</p>
                 
